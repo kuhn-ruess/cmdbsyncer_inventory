@@ -1,0 +1,5 @@
+plugin: cmdbsyncer_inventory
+
+api_url: "https://url_to_syncer/path"
+username: "apiuser"
+password: "apipassword"

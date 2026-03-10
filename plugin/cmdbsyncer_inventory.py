@@ -4,7 +4,11 @@ __metaclass__ = type
 
 from ansible.plugins.inventory import BaseInventoryPlugin
 from ansible.errors import AnsibleError
+from ansible.utils.display import Display
 import requests
+import os
+
+
 
 DOCUMENTATION = r'''
     name: cmdbsyncer_inventory
@@ -16,39 +20,54 @@ DOCUMENTATION = r'''
       plugin:
         description: Cmdbsyncer Inventory
         required: true
-        choices: ['cmdbsyncer_inventory']
+        choices: ['cmdbsyncer_inventory', 'kuhn_ruess.cmdbsyncer_inv.cmdbsyncer_inventory']
       api_url:
         description: Url to the Cmdbsyncer
         required: true
         type: string
       username:
         description: Username
-        required: true
+        required: false
         type: string
       password:
         description: Password
-        required: true
+        required: false
         type: string
 '''
 
 class InventoryModule(BaseInventoryPlugin):
     NAME = 'cmdbsyncer_inventory'
-
+    #display = Display()
     def verify_file(self, path):
-        valid = super(InventoryModule, self).verify_file(path)
+        #valid = super(InventoryModule, self).verify_file(path)
+        #if not valid:
+        #   return False
+        #return self.get_option('plugin') == self.NAME
+        valid = super().verify_file(path)
         if not valid:
             return False
-        return self.get_option('plugin') == self.NAME
+        return path.endswith(('.yml', '.yaml'))
+
 
     def parse(self, inventory, loader, path, cache=True):
         super(InventoryModule, self).parse(inventory, loader, path)
-
+        display = Display()
         self._read_config_data(path)
         api_url  = self.get_option('api_url')
-        username = self.get_option('username')
-        password = self.get_option('password')
+        username = os.environ.get("CMDBSYNCER_APIUSER")
+        password = os.environ.get("CMDBSYNCER_APIPASSWORD")
+
+        display.warning(
+            f"ENV DEBUG: CMDBSYNCER_APIUSER present={bool(username)}, "
+            f"CMDBSYNCER_APIPASSWORD present={bool(password)}"
+        )
+
+        if not username or not password:
+            username = self.get_option('username')
+            password = self.get_option('password')
         api_url += "/api/v1/ansible/"
 
+        
 
         try:
             headers = {
@@ -66,6 +85,10 @@ class InventoryModule(BaseInventoryPlugin):
             raise AnsibleError(
                 "REST API responded with status %s" % resp.status_code
             )
+
+        
+
+
 
         data = resp.json()
         self._populate_from_api(data)

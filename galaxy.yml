@@ -1,0 +1,24 @@
+---
+namespace: kuhn_ruess
+name: cmdbsyncer_inventory
+version: 0.1.0
+readme: README.md
+authors:
+  - Bastian Kuhn <bastian.kuhn@kuhn-ruess.de>
+description: Inventory Plugin for Cmdbsyncer Data
+license:
+  - MIT
+tags:
+  - infrastructure
+  - networking
+  - tools
+repository: https://github.com/kuhn-ruess/cmdbsyncer_inventory
+issues: https://github.com/kuhn-ruess/cmdbsyncer_inventory/issues
+documentation: https://github.com/kuhn-ruess/cmdbsyncer_inventory/wiki
+dependencies: {}
+build_ignore:
+  - .git
+  - .github
+  - .gitignore
+  - tests/output
+  - "*.tar.gz"

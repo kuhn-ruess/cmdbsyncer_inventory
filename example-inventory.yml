@@ -1,0 +1,8 @@
+# Example inventory configuration for cmdbsyncer_inventory plugin
+# 
+# Usage: ansible-inventory -i example-inventory.yml --list
+
+plugin: cmdbsyncer_inventory
+api_url: https://your-cmdbsyncer-instance.com
+# username: your_username  # Optional - use CMDBSYNCER_APIUSER env var instead
+# password: your_password  # Optional - use CMDBSYNCER_APIPASSWORD env var instead

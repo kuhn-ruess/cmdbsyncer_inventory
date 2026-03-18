@@ -1,0 +1,8 @@
+# Runtime dependencies
+ansible-core>=2.12
+requests>=2.25.0
+
+# Development dependencies
+build
+twine
+wheel

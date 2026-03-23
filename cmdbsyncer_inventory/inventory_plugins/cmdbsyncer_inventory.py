@@ -20,7 +20,7 @@ DOCUMENTATION = r'''
       plugin:
         description: Cmdbsyncer Inventory
         required: true
-        choices: ['cmdbsyncer_inventory', 'kuhn_ruess.cmdbsyncer_inv.cmdbsyncer_inventory']
+        choices: ['cmdbsyncer_inventory']
       api_url:
         description: Url to the Cmdbsyncer
         required: true
@@ -33,6 +33,11 @@ DOCUMENTATION = r'''
         description: Password
         required: false
         type: string
+      verify_ssl:
+        description: Verify SSL certificates
+        required: false
+        type: bool
+        default: true
 '''
 
 class InventoryModule(BaseInventoryPlugin):
@@ -65,6 +70,8 @@ class InventoryModule(BaseInventoryPlugin):
         if not username or not password:
             username = self.get_option('username')
             password = self.get_option('password')
+        
+        verify_ssl = self.get_option('verify_ssl')
         api_url += "/api/v1/ansible/"
 
         
@@ -77,6 +84,7 @@ class InventoryModule(BaseInventoryPlugin):
                 api_url,
                 headers=headers,
                 timeout=10,
+                verify=verify_ssl,
             )
         except Exception as e:
             raise AnsibleError("Error during REST API call: %s" % e)
